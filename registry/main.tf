@@ -6,21 +6,13 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-variable "events" {
-  type = list(string)
-}
+variable "project" { type = string }
 
-variable "project_id" {
-  type = string
-}
 
-resource "google_pubsub_topic" "global" {
-  for_each  = toset(var.events)
-  project   = var.project_id
-  name      = each.key
-}
-
-resource "google_pubsub_topic" "keepalive" {
-  project   = var.project_id
-  name      = "keepalive"
+resource "google_artifact_registry_repository" "default" {
+  project       = var.project
+  location      = "europe"
+  repository_id = "apps"
+  description   = ""
+  format        = "DOCKER"
 }
