@@ -28,18 +28,9 @@ resource "google_project" "host" {
   org_id          = var.organization_id
 }
 
-module "public-networking-project" {
-  source          = "./service-project"
-  billing_account = var.billing_account
-  host_project    = google_project.host.project_id
-  organization_id = var.organization_id
-  project_name    = "${var.project_name} LB"
-  service_project = local.public_networking_project_id
-
-  depends_on = [
-    google_project.host,
-    google_compute_shared_vpc_host_project.host
-  ]
+module "network" {
+  source  = "./networking"
+  project = google_project.host.project_id 
 }
 
 module "services-project" {
@@ -62,24 +53,6 @@ module "services-project" {
     "eventarc.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
-  ]
-}
-
-module "pki-project" {
-  source          = "./service-project"
-  billing_account = var.billing_account
-  host_project    = google_project.host.project_id
-  organization_id = var.organization_id
-  project_name    = "${var.project_name} PKI"
-  service_project = local.pki_project_id
-
-  depends_on = [
-    google_project.host,
-    google_compute_shared_vpc_host_project.host
-  ]
-
-  enabled_services = [
-    "cloudkms.googleapis.com",
   ]
 }
 
@@ -129,9 +102,7 @@ module "registry" {
 
 module "pki" {
   source  = "./pki"
-  project = local.pki_project_id
-
-  depends_on = [module.pki-project]
+  project = local.project_id
 }
 
 output "host_project" {
