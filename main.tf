@@ -88,9 +88,10 @@ resource "google_compute_shared_vpc_host_project" "host" {
 
 module "events" {
   depends_on = [module.services-project]
-  source     = "./pubsub"
-  events     = var.events
-  project_id = local.services_project_id
+  source          = "./pubsub"
+  events          = var.events
+  project_id      = local.services_project_id
+  project_prefix  = var.project_prefix
 }
 
 module "registry" {

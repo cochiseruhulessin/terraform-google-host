@@ -14,10 +14,19 @@ variable "project_id" {
   type = string
 }
 
+variable "project_prefix" {
+  type        = string
+}
+
 resource "google_pubsub_topic" "global" {
   for_each  = toset(var.events)
   project   = var.project_id
   name      = each.key
+}
+
+resource "google_pubsub_topic" "commands" {
+  project   = var.project_id
+  name      = "${var.project_prefix}.commands"
 }
 
 resource "google_pubsub_topic" "keepalive" {
