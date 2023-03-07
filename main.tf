@@ -51,17 +51,36 @@ module "services-project" {
     "cloudkms.googleapis.com",
     "cloudscheduler.googleapis.com",
     "eventarc.googleapis.com",
+    "monitoring.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
   ]
 }
 
 resource "google_logging_project_bucket_config" "default" {
-  depends_on = [google_project.host]
-  project    = google_project.host.project_id
-  location  = var.logging_location
-  retention_days = 30
-  bucket_id = "services-default"
+  depends_on      = [google_project.host]
+  project         = google_project.host.project_id
+  location        = var.logging_location
+  retention_days  = 30
+  bucket_id       = "services-default"
+}
+
+resource "google_logging_project_bucket_config" "metrics" {
+  depends_on              = [module.services-project]
+  project                 = local.services_project_id
+  location                = "europe-west4"
+  retention_days          = 3650
+  bucket_id               = "Metrics"
+}
+
+resource "google_logging_project_sink" "metrics" {
+  depends_on  = [module.services-project]
+  project     = local.services_project_id
+  name        = "Metrics"
+  description = "Collects system-level metrics."
+  destination = "logging.googleapis.com/${google_logging_project_bucket_config.metrics.name}"
+  filter      = "jsonPayload.type = \"cochise.io/metric\""
+  unique_writer_identity  = true
 }
 
 resource "google_project_service" "required" {
@@ -110,6 +129,14 @@ output "host_project" {
   value = local.project_id
 }
 
+output "metrics_bucket_name" {
+  value = google_logging_project_bucket_config.metrics.name
+}
+
 output "public_networking_project_id" {
   value = local.public_networking_project_id
+}
+
+output "service_project" {
+  value = local.services_project_id
 }
