@@ -54,6 +54,7 @@ module "services-project" {
     "monitoring.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
+    "servicenetworking.googleapis.com"
   ]
 }
 
