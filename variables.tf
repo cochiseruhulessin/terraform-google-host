@@ -20,7 +20,7 @@ variable "events" {
 variable "logging_location" {
   type        = string
   description = "The storage location of common project logs."
-} 
+}
 
 variable "project_prefix" {
   type        = string
@@ -35,4 +35,10 @@ variable "project_name" {
 variable "organization_id" {
   type        = string
   description = "The organization identifier for the Google organization owning the project."
+}
+
+variable "service_network" {
+  type        = string
+  default     = "services"
+  description = "Default network for VPC services"
 }

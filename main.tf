@@ -50,11 +50,14 @@ module "services-project" {
     "artifactregistry.googleapis.com",
     "cloudkms.googleapis.com",
     "cloudscheduler.googleapis.com",
+    "cloudtasks.googleapis.com",
     "eventarc.googleapis.com",
     "monitoring.googleapis.com",
+    "redis.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
-    "servicenetworking.googleapis.com"
+    "servicenetworking.googleapis.com",
+    "vpcaccess.googleapis.com"
   ]
 }
 
