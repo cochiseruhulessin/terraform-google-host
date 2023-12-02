@@ -10,6 +10,7 @@ locals {
   nat_project_id                = "${var.project_prefix}-${random_string.project_suffix.result}-nat"
   project_id                    = "${var.project_prefix}-${random_string.project_suffix.result}"
   services_project_id           = "${var.project_prefix}-${random_string.project_suffix.result}-svc"
+  datastore_project_id          = "${var.project_prefix}-${random_string.project_suffix.result}-data"
   pki_project_id                = "${var.project_prefix}-${random_string.project_suffix.result}-pki"
   public_networking_project_id  = "${var.project_prefix}-${random_string.project_suffix.result}-lb"
 }
@@ -60,6 +61,24 @@ module "services-project" {
     "vpcaccess.googleapis.com"
   ]
 }
+
+#module "datastore-project" {
+#  source          = "./datastore-project"
+#  billing_account = var.billing_account
+#  host_project    = google_project.host.project_id
+#  organization_id = var.organization_id
+#  project_name    = "${var.project_name} Data"
+#  service_project = local.datastore_project_id
+#
+#  depends_on = [
+#    google_project.host,
+#    google_compute_shared_vpc_host_project.host
+#  ]
+#
+#  enabled_services = [
+#    "cloudkms.googleapis.com",
+#  ]
+#}
 
 resource "google_logging_project_bucket_config" "default" {
   depends_on      = [google_project.host]
